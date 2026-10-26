@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Arena Dolla</title>
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #0b3d2e;
+    font-family: system-ui, sans-serif;
+    color: white;
+  }
+  h1 {
+    font-size: 1.2rem;
+    opacity: 0.8;
+    margin-bottom: 2rem;
+  }
+  button {
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    border: none;
+    background: #f2c94c;
+    color: #0b3d2e;
+    font-size: 1.4rem;
+    font-weight: bold;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    cursor: pointer;
+  }
+  button:active {
+    transform: scale(0.96);
+  }
+  button:disabled {
+    opacity: 0.6;
+  }
+  #status {
+    margin-top: 2rem;
+    font-size: 1rem;
+    text-align: center;
+    max-width: 320px;
+  }
+  video {
+    margin-top: 1.5rem;
+    max-width: 90vw;
+    border-radius: 8px;
+  }
+</style>
+</head>
+<body>
+  <h1>Quadra 1 — Salvar Replay</h1>
+  <button id="btn" onclick="saveReplay()">SALVAR<br/>REPLAY</button>
+  <div id="status"></div>
+  <video id="preview" controls style="display:none"></video>
+
+<script>
+async function saveReplay() {
+  const btn = document.getElementById('btn');
+  const status = document.getElementById('status');
+  const preview = document.getElementById('preview');
+
+  btn.disabled = true;
+  status.textContent = 'Salvando...';
+  preview.style.display = 'none';
+
+  try {
+    const res = await fetch('/save-replay', { method: 'POST' });
+    const data = await res.json();
+
+    if (data.ok) {
+      status.textContent = 'Replay salvo! (' + data.duration_seconds + 's)';
+      preview.src = data.url;
+      preview.style.display = 'block';
+    } else {
+      status.textContent = 'Erro: ' + data.error;
+    }
+  } catch (e) {
+    status.textContent = 'Falha ao conectar no serviço local.';
+  } finally {
+    btn.disabled = false;
+  }
+}
+</script>
+</body>
+</html>

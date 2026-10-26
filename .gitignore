@@ -1,0 +1,6 @@
+venv/
+__pycache__/
+*.pyc
+buffer/
+clips/
+*.mp4
